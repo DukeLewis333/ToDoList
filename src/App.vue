@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="`修改任务-${currenUnFinishEvent}`"
+    <el-dialog :title="`修改任务-${currenUnFinishEventIndex > 0 && unFinishEvent[currenUnFinishEventIndex].name}`"
                :visible.sync="dialogFormVisible"
                :close-on-click-modal="false">
       <el-input v-model="dialogEditEvent"/>
@@ -73,7 +73,7 @@ export default {
       unFinishEvent: [],
       // 提交事件
       submitEvent: '',
-      currenUnFinishEvent: '',
+      currenUnFinishEventIndex: '',
       dialogFormVisible: false,
       dialogEditEvent: '',
     }
@@ -112,20 +112,15 @@ export default {
       this.finishEvent[index].isHover = false
     },
     handleDialogEditEvent() {
-      this.unFinishEvent = this.unFinishEvent.map(item => {
-        if (item.name === this.currenUnFinishEvent) {
-          item.name = this.dialogEditEvent
-          return item
-        }
-      })
+      this.unFinishEvent[this.currenUnFinishEventIndex].name = this.dialogEditEvent
       // 清空输入框
       this.dialogEditEvent = ''
-      this.currenUnFinishEvent = ''
+      this.currenUnFinishEventIndex = -1
       this.dialogFormVisible = false
     },
     editUnFinishEvent(index) {
       this.dialogFormVisible = true
-      this.currenUnFinishEvent = this.unFinishEvent[index].name
+      this.currenUnFinishEventIndex = index
     },
     deleteUnFinishEvent(index) {
       this.unFinishEvent.splice(index, 1)
