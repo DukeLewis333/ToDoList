@@ -73,11 +73,9 @@ export default {
       unFinishEvent: [],
       // 提交事件
       submitEvent: '',
-      // unFinishEventHover: [],
       currenUnFinishEvent: '',
       dialogFormVisible: false,
       dialogEditEvent: '',
-      // finishEventHover: []
     }
   },
   computed: {
