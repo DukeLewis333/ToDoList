@@ -18,14 +18,14 @@
               :key="event"
               v-for="(event, index) in unFinishEvent"
               style="background-color: powderblue;color: deepskyblue;gap: 2px"
-              @mouseenter="handleUnFinishEventEnter"
-              @mouseleave="handleUnFinishEventLeave"
+              @mouseenter="() => { handleUnFinishEventEnter(index) }"
+              @mouseleave="() => { handleUnFinishEventLeave(index) }"
           >
             <div class="loading"></div>
-            <div>{{ event }}</div>
-            <div class="el-icon-circle-check pointer-cursor" v-show="unFinishEventHover" @click="() => { finishEventFun(index) }"></div>
-            <div class="el-icon-circle-close pointer-cursor" v-show="unFinishEventHover" @click="() => { deleteUnFinishEvent(index) }"></div>
-            <div class="el-icon-edit pointer-cursor" v-show="unFinishEventHover" @click="() => { editUnFinishEvent(index) }"></div>
+            <div>{{ event.name }}</div>
+            <div class="el-icon-circle-check pointer-cursor" v-show="event.isHover" @click="() => { finishEventFun(index) }"></div>
+            <div class="el-icon-circle-close pointer-cursor" v-show="event.isHover" @click="() => { deleteUnFinishEvent(index) }"></div>
+            <div class="el-icon-edit pointer-cursor" v-show="event.isHover" @click="() => { editUnFinishEvent(index) }"></div>
           </div>
         </div>
       </div>
@@ -39,12 +39,12 @@
               :key="event"
               v-for="(event, index) in finishEvent"
               style="background-color: darkseagreen;color: lawngreen;gap: 2px"
-              @mouseenter="handleFinishEventEnter"
-              @mouseleave="handleFinishEventLeave"
+              @mouseenter="() => { handleFinishEventEnter(index) }"
+              @mouseleave="() => { handleFinishEventLeave(index) }"
           >
             <div class="el-icon-circle-check"></div>
-            <div>{{ event }}</div>
-            <div class="el-icon-circle-close pointer-cursor" v-show="finishEventHover" @click="() => { deleteFinishEvent(index) }"></div>
+            <div>{{ event.name }}</div>
+            <div class="el-icon-circle-close pointer-cursor" v-show="event.isHover" @click="() => { deleteFinishEvent(index) }"></div>
           </div>
         </div>
       </div>
@@ -67,14 +67,17 @@ export default {
   name: 'App',
   data() {
     return {
+      // 已完成事件列表
       finishEvent: [],
+      // 未完成时间列表
       unFinishEvent: [],
+      // 提交事件
       submitEvent: '',
-      unFinishEventHover: false,
+      // unFinishEventHover: [],
       currenUnFinishEvent: '',
       dialogFormVisible: false,
       dialogEditEvent: '',
-      finishEventHover: false
+      // finishEventHover: []
     }
   },
   computed: {
@@ -91,26 +94,30 @@ export default {
     },
     handleSubmitEvent() {
       if (this.submitEvent) {
-        this.unFinishEvent.push(this.submitEvent)
+        this.unFinishEvent.push({
+          name: this.submitEvent,
+          isHover: false
+        })
         this.submitEvent = ''
       }
     },
-    handleUnFinishEventEnter() {
-      this.unFinishEventHover = true
+    handleUnFinishEventEnter(index) {
+      this.unFinishEvent[index].isHover = true
     },
-    handleUnFinishEventLeave() {
-      this.unFinishEventHover = false
+    handleUnFinishEventLeave(index) {
+      this.unFinishEvent[index].isHover = false
     },
-    handleFinishEventEnter() {
-      this.finishEventHover = true
+    handleFinishEventEnter(index) {
+      this.finishEvent[index].isHover = true
     },
-    handleFinishEventLeave() {
-      this.finishEventHover = false
+    handleFinishEventLeave(index) {
+      this.finishEvent[index].isHover = false
     },
     handleDialogEditEvent() {
       this.unFinishEvent = this.unFinishEvent.map(item => {
-        if (item === this.currenUnFinishEvent) {
-          return this.dialogEditEvent
+        if (item.name === this.currenUnFinishEvent) {
+          item.name = this.dialogEditEvent
+          return item
         }
       })
       // 清空输入框
@@ -120,12 +127,13 @@ export default {
     },
     editUnFinishEvent(index) {
       this.dialogFormVisible = true
-      this.currenUnFinishEvent = this.unFinishEvent[index]
+      this.currenUnFinishEvent = this.unFinishEvent[index].name
     },
     deleteUnFinishEvent(index) {
       this.unFinishEvent.splice(index, 1)
     },
     finishEventFun(index) {
+      this.unFinishEvent[index].isHover = false
       this.finishEvent.push(this.unFinishEvent[index])
       this.unFinishEvent.splice(index, 1)
     },
